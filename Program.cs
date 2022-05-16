@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 static Double Sqrt(Double nb)
@@ -52,7 +53,7 @@ static Dictionary<Int32, Double> ParseSide(String arg)
 	return dict;
 }
 
-void Solve(IReadOnlyDictionary<Int32, Double> d)
+static void Solve(IReadOnlyDictionary<Int32, Double> d)
 {
 	Double  a = d[2],
 			b = d[1],
@@ -79,13 +80,30 @@ static Dictionary<Int32, Double> parse(String arg)
 	};
 }
 
-Console.WriteLine("Hello, World!");
-Console.WriteLine($"args: {args[0]}");
-if (args.Length != 1)
+static Char GetSign(Double nb) => nb >= 0 ? '+' : '-'; 
+
+static void ShowReducedForm(IReadOnlyDictionary<Int32, Double> coeffs)
 {
-	Console.WriteLine("Error. Please provide your equation within quotes");
-	Environment.Exit(1);
+	Console.Write($"{coeffs[2]} * X^2");
+	Console.Write($" {GetSign(coeffs[1])} {coeffs[1]} * X^1");
+	Console.Write($" {GetSign(coeffs[0])} {coeffs[0]} * X^0");
+	Console.WriteLine(" = 0");
 }
-Dictionary<Int32, Double> dict = parse(args[0]);
-Console.WriteLine($"0: {dict[0]}, 1: {dict[1]}, 2: {dict[2]}");
-Solve(dict);
+
+static void Computorv1(IReadOnlyList<String> args)
+{
+	Console.WriteLine("Hello, World!");
+	Console.WriteLine($"args: {args[0]}");
+	if (args.Count != 1)
+	{
+		Console.WriteLine("Error. Please provide your equation within quotes");
+		Environment.Exit(1);
+	}
+	Dictionary<Int32, Double> dict = parse(args[0]);
+	Console.WriteLine($"0: {dict[0]}, 1: {dict[1]}, 2: {dict[2]}");
+	ShowReducedForm(dict);
+	Solve(dict);
+}
+
+
+Computorv1(args);
