@@ -1,7 +1,11 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using System.Globalization;
 using System.Text.RegularExpressions;
+
+static Double Abs(Double nb)
+{
+	return (nb < 0) ? nb * -1 : nb;
+}
 
 static Double Sqrt(Double nb)
 {
@@ -18,7 +22,6 @@ static Double Sqrt(Double nb)
 
 static Dictionary<Int32, Double> ParseSide(String arg)
 {
-	Console.WriteLine($"lets parse {arg}");
 	Regex r = new Regex(@"([+-]?[\d+]?.?[\d+]?)\*X\^([+-]?[\d+])", RegexOptions.IgnoreCase);
 	Dictionary<Int32, Double> dict = new()
 	{
@@ -30,17 +33,14 @@ static Dictionary<Int32, Double> ParseSide(String arg)
 
 	foreach (String part in parts)
 	{
-		Console.WriteLine($"part = {part}");
 		Match match = r.Match(part);
 		if (match.Success)
 		{
-			foreach (Object? group in match.Groups)
-			{
-				Console.WriteLine($"group: {group}");
-			}
 			// parse it like a * x^p
 			Double coeff = double.Parse(match.Groups[1].Value);
 			Int32 power = int.Parse(match.Groups[2].Value);
+			if (!dict.ContainsKey(power))
+				dict[power] = 0;
 			dict[power] += coeff;
 		}
 		else
@@ -59,50 +59,139 @@ static void Solve(IReadOnlyDictionary<Int32, Double> d)
 			b = d[1],
 			c = d[0];
 	Double discriminant = (b * b) - (4 * a * c);
-	Double sol1 = (-b - Sqrt(discriminant)) / (2 * a);
-	Double sol2 = (+b - Sqrt(discriminant)) / (2 * a);
-	Console.WriteLine($"The two solutions are:\n{sol1}\n{sol2}");
+
+	Double sol1 = (-b + Sqrt(discriminant)) / (2 * a);
+	Double sol2 = (-b - Sqrt(discriminant)) / (2 * a);
+	
+	if (discriminant > 0)
+	{
+		Console.WriteLine("Discriminant is strictly positive, the two solutions are:");
+		Console.WriteLine(sol1);
+		Console.WriteLine(sol2);
+	}
+	else if (discriminant == 0)
+	{
+		Console.WriteLine("Discriminant is one, so we have only one solution:");
+		Console.WriteLine(sol1);
+	}
+	else
+	{
+		// no real roots
+		Console.WriteLine("Unable to solve, since the discriminant is lower than zero");
+	}
 }
 
-static Dictionary<Int32, Double> parse(String arg)
+static void SolveEasy(IReadOnlyDictionary<Int32, Double> d)
+{
+	Int32 highestPower = GetHighestPolynomialDegree(d);
+
+	if (highestPower == 0)
+	{
+		Console.WriteLine("Solvable for every single X");
+	}
+	else
+	{
+		Double rhs = d.ContainsKey(0) ? d[0] * -1 : 0;
+		Double answer = rhs / d[1];
+		Console.WriteLine($"The solution is:");
+		Console.WriteLine(answer);
+	}
+}
+
+static Dictionary<Int32, Double> Parse(String arg)
 {
 	String arg2 = Regex.Replace(arg, @"\s+", "");
-	Console.WriteLine($"arg={arg}, arg2={arg2}");
 	String[] splitted = arg2.Split('=');
 	Dictionary<Int32, Double> lhs = ParseSide(splitted[0]);
 	Dictionary<Int32, Double> rhs = ParseSide(splitted[1]);
-	
-	return new Dictionary<Int32, Double>
+
+	foreach ((Int32 key, Double value) in rhs)
 	{
-		{0, lhs[0] - rhs[0]},
-		{1, lhs[1] - rhs[1]},
-		{2, lhs[2] - rhs[2]}
-	};
+		if (!lhs.ContainsKey(key))
+		{
+			lhs[key] = 0;
+		}
+		lhs[key] -= value;
+	}
+
+	foreach ((Int32 key, var _) in lhs.Where(kvp => kvp.Value == 0).ToList())
+	{
+		lhs.Remove(key);
+	}
+	return (lhs);
 }
 
-static Char GetSign(Double nb) => nb >= 0 ? '+' : '-'; 
+static Int32 GetHighestPolynomialDegree(IReadOnlyDictionary<Int32, Double> coeffs)
+{
+	Int32 highestDegree = 0;
+
+	if (coeffs.Count > 0)
+	{
+		highestDegree = coeffs.Keys.Max();
+	}
+	return (highestDegree);
+}
+
+static void ShowHighestPolynomialDegree(IReadOnlyDictionary<Int32, Double> coeffs)
+{
+	Int32 highestPolynomialDegree = GetHighestPolynomialDegree(coeffs);
+	Console.WriteLine($"Polynomial degree: {highestPolynomialDegree}");
+}
+
+static Char GetSignPrefix(Double nb) => nb >= 0 ? '+' : '-';
 
 static void ShowReducedForm(IReadOnlyDictionary<Int32, Double> coeffs)
 {
-	Console.Write($"{coeffs[2]} * X^2");
-	Console.Write($" {GetSign(coeffs[1])} {coeffs[1]} * X^1");
-	Console.Write($" {GetSign(coeffs[0])} {coeffs[0]} * X^0");
+	Console.Write("Reduced form: ");
+	Boolean first = true;
+	foreach ((Int32 power, Double coefficient) in coeffs.OrderByDescending(x => x.Key))
+	{
+		if (first && coefficient < 0)
+		{
+			Console.Write('-');
+		}
+		else if (!first)
+		{
+			Console.Write($" {GetSignPrefix(coefficient)} ");
+		}
+
+		if (coefficient != 0)
+		{
+			first = false;
+			Console.Write($"{Abs(coefficient)} * X^{power}");
+		}
+	}
+
+	if (first)
+	{
+		Console.Write("0");
+	}
 	Console.WriteLine(" = 0");
 }
 
 static void Computorv1(IReadOnlyList<String> args)
 {
-	Console.WriteLine("Hello, World!");
-	Console.WriteLine($"args: {args[0]}");
 	if (args.Count != 1)
 	{
 		Console.WriteLine("Error. Please provide your equation within quotes");
 		Environment.Exit(1);
 	}
-	Dictionary<Int32, Double> dict = parse(args[0]);
-	Console.WriteLine($"0: {dict[0]}, 1: {dict[1]}, 2: {dict[2]}");
+	Dictionary<Int32, Double> dict = Parse(args[0]);
+	Int32 highestDegree = GetHighestPolynomialDegree(dict);
 	ShowReducedForm(dict);
-	Solve(dict);
+	ShowHighestPolynomialDegree(dict);
+	if (highestDegree < 2)
+	{
+		SolveEasy(dict);
+	}
+	else if (highestDegree == 2)
+	{
+		Solve(dict);
+	}
+	else
+	{
+		Console.WriteLine("Error. Please provide me with a valid polynomial.");
+	}
 }
 
 
