@@ -72,13 +72,23 @@ static Int32 Max(Int32 a, Int32 b)
 
 static void ShowIrreducableFraction(Int32 up, Int32 down)
 {
-	int gcd = GCD(up, down);
-	String upstr = new String($"{up / gcd}");
-	String downstr = new String($"{down / gcd}");
+	Int32 gcd = GCD(up, down);
+	up /= gcd;
+	down /= gcd;
+	if (down is -1 or 1)
+	{
+		Console.WriteLine($"x = {up / down}");
+	}
+	else
+	{
+		String upstr = new String(up.ToString());
+		String downstr = new String(down.ToString());
 	
-	Console.WriteLine($"    {upstr}");
-	Console.WriteLine($"x = {new String('\u2014', Max(upstr.Length, downstr.Length))}");
-	Console.WriteLine($"    {downstr}");
+		Console.WriteLine($"    {upstr}");
+		Console.WriteLine($"x = {new String('\u2014', Max(upstr.Length, downstr.Length))}");
+		Console.WriteLine($"    {downstr}");
+		Console.WriteLine($"down = {down}");
+	}
 }
 
 static bool isInteger(Double d)
@@ -98,7 +108,7 @@ static void ShowSteps(Double d, Double a, Double b, Double c)
 	Console.WriteLine($"    {new String(' ', sp)}{lower}");
 	Console.WriteLine();
 
-	Console.WriteLine($"Discriminant = {d}");
+	Console.WriteLine($"Discriminant = {b}\u00b2 - 4 * {a} * {c} = {b*b} - {4*a*c} = {d}");
 	Console.WriteLine();
 
 	upper = $"-{b} ± \u221A({d})";
@@ -110,13 +120,19 @@ static void ShowSteps(Double d, Double a, Double b, Double c)
 
 	Double dSqrt = Sqrt(d);
 
-	if (isInteger(-b - dSqrt) && isInteger(2 * a))
+	if (isInteger(2 * a) && (isInteger(-b + dSqrt) || isInteger(-b - dSqrt)))
 	{
-		ShowIrreducableFraction((Int32)(-b - Sqrt(d)), (Int32)(2 * a));
-	}
-	if (isInteger(-b + dSqrt) && isInteger(2 * a))
-	{
-		ShowIrreducableFraction((Int32)(-b + Sqrt(d)), (Int32)(2 * a));
+		Console.WriteLine($"Here be the irreducable fractions:");
+		if (isInteger(-b + dSqrt))
+		{
+			ShowIrreducableFraction((Int32)(-b + Sqrt(d)), (Int32)(2 * a));
+		}
+
+		if (isInteger(-b - dSqrt))
+		{
+			ShowIrreducableFraction((Int32)(-b - Sqrt(d)), (Int32)(2 * a));
+		}
+		
 	}
 }
 
@@ -242,12 +258,24 @@ static void ShowReducedForm(IReadOnlyDictionary<Int32, Double> coeffs)
 
 static void Computorv1(IReadOnlyList<String> args)
 {
+	Dictionary<Int32, Double> dict;
 	if (args.Count != 1)
 	{
 		Console.WriteLine("Error. Please provide your equation within quotes");
 		Environment.Exit(1);
 	}
-	Dictionary<Int32, Double> dict = Parse(args[0]);
+
+	try
+	{
+		dict = Parse(args[0]);
+	}
+	catch
+	{
+		Console.WriteLine("Could you do me a favour?");
+		System.Threading.Thread.Sleep(1000);
+		Console.WriteLine("And please give me valid input?!?!?!??!!");
+		return ;
+	}
 	Int32 highestDegree = GetHighestPolynomialDegree(dict);
 	ShowReducedForm(dict);
 	ShowHighestPolynomialDegree(dict);
