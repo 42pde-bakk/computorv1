@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Text;
 using System.Text.RegularExpressions;
 
 static Double Abs(Double nb)
@@ -53,12 +54,82 @@ static Dictionary<Int32, Double> ParseSide(String arg)
 	return dict;
 }
 
+static Int32 GCD(Int32 a, Int32 b)
+{
+	while (b > 0)
+	{
+		Int32 rem = a % b;
+		a = b;
+		b = rem;
+	}
+	return a;
+}
+
+static Int32 Max(Int32 a, Int32 b)
+{
+	return (a > b ? a : b);
+}
+
+static void ShowIrreducableFraction(Int32 up, Int32 down)
+{
+	int gcd = GCD(up, down);
+	String upstr = new String($"{up / gcd}");
+	String downstr = new String($"{down / gcd}");
+	
+	Console.WriteLine($"    {upstr}");
+	Console.WriteLine($"x = {new String('\u2014', Max(upstr.Length, downstr.Length))}");
+	Console.WriteLine($"    {downstr}");
+}
+
+static bool isInteger(Double d)
+{
+	return (d == (int) d);
+}
+
+static void ShowSteps(Double d, Double a, Double b, Double c)
+{
+	Console.WriteLine();
+	Console.OutputEncoding = Encoding.Unicode;
+	String upper = $"-{b} ± \u221A({b}\u00B2 - 4*{a}*{c})";
+	Console.WriteLine($"    {upper}");
+	Console.WriteLine($"x = {new String('\u2014', upper.Length)}");
+	String lower = $"2 * {a}";
+	Int32 sp = (upper.Length - lower.Length) / 2;
+	Console.WriteLine($"    {new String(' ', sp)}{lower}");
+	Console.WriteLine();
+
+	Console.WriteLine($"Discriminant = {d}");
+	Console.WriteLine();
+
+	upper = $"-{b} ± \u221A({d})";
+	Console.WriteLine($"    {upper}");
+	Console.WriteLine($"x = {new String('\u2014', upper.Length)}");
+	lower = $"{2 * a}";
+	sp = (upper.Length - lower.Length) / 2;
+	Console.WriteLine($"    {new String(' ', sp)}{lower}");
+
+	Double dSqrt = Sqrt(d);
+
+	if (isInteger(-b - dSqrt) && isInteger(2 * a))
+	{
+		ShowIrreducableFraction((Int32)(-b - Sqrt(d)), (Int32)(2 * a));
+	}
+	if (isInteger(-b + dSqrt) && isInteger(2 * a))
+	{
+		ShowIrreducableFraction((Int32)(-b + Sqrt(d)), (Int32)(2 * a));
+	}
+}
+
 static void Solve(IReadOnlyDictionary<Int32, Double> d)
 {
 	Double  a = d[2],
 			b = d[1],
 			c = d[0];
 	Double discriminant = (b * b) - (4 * a * c);
+	if (Environment.GetEnvironmentVariable("COMPUTORV1_BONUS") != null)
+	{
+		ShowSteps(discriminant, a, b, c);
+	}
 
 	Double sol1 = (-b + Sqrt(discriminant)) / (2 * a);
 	Double sol2 = (-b - Sqrt(discriminant)) / (2 * a);
