@@ -1,0 +1,8 @@
+#version: '3'
+
+computorv1:
+  build: ./
+  volumes:
+  - .:/code
+  tty: true
+  container_name: pde-bakk_computorv1
