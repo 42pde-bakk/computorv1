@@ -203,7 +203,10 @@ static Dictionary<Int32, Double> Parse(String arg)
 
 	foreach ((Int32 key, var _) in lhs.Where(kvp => kvp.Value == 0).ToList())
 	{
-		lhs.Remove(key);
+		if (key != 0)
+		{
+			lhs.Remove(key);
+		}
 	}
 	return (lhs);
 }
@@ -237,13 +240,13 @@ static void ShowReducedForm(IReadOnlyDictionary<Int32, Double> coeffs)
 		{
 			Console.Write('-');
 		}
-		else if (!first)
-		{
-			Console.Write($" {GetSignPrefix(coefficient)} ");
-		}
 
 		if (coefficient != 0)
 		{
+			if (!first)
+			{
+				Console.Write($" {GetSignPrefix(coefficient)} ");
+			}
 			first = false;
 			Console.Write($"{Abs(coefficient)} * X^{power}");
 		}
