@@ -37,5 +37,10 @@ function run_testcase() {
 #run_testcase "5 * X^0 + 3 * X^1 + 3 * X^2 = 1 * X^0 + 0 * X^1"
 
 # Third or more degree equation after reduction
-run_testcase "6 * X ^ 3 + 5 * X ^ 2 + 6 * X ^ 0 = 0"
+#run_testcase "6 * X ^ 3 + 5 * X ^ 2 + 6 * X ^ 0 = 0"
 #run_testcase "6 * X ^ 3 + 5 * X ^ 2 + 6 * X ^ 0 = 6 * X ^ 3"
+
+## Bonus:
+
+# Managing free form entry
+run_testcase "4 - X^2 + X = 0"
