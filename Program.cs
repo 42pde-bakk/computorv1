@@ -138,33 +138,39 @@ static void ShowSteps(Double d, Double a, Double b, Double c)
 
 static void Solve(IReadOnlyDictionary<Int32, Double> d)
 {
-	Double  a = d[2],
-			b = d[1],
-			c = d[0];
+	Double	a = d.ContainsKey(2) ? d[2] : 0,
+			b = d.ContainsKey(1) ? d[1] : 0,
+			c = d.ContainsKey(0) ? d[0] : 0;
+
 	Double discriminant = (b * b) - (4 * a * c);
 	if (Environment.GetEnvironmentVariable("COMPUTORV1_BONUS") != null)
 	{
 		ShowSteps(discriminant, a, b, c);
 	}
 
-	Double sol1 = (-b + Sqrt(discriminant)) / (2 * a);
-	Double sol2 = (-b - Sqrt(discriminant)) / (2 * a);
-	
 	if (discriminant > 0)
 	{
+		Double solution1 = (-b + Sqrt(discriminant)) / (2 * a);
+		Double solution2 = (-b - Sqrt(discriminant)) / (2 * a);
 		Console.WriteLine("Discriminant is strictly positive, the two solutions are:");
-		Console.WriteLine(sol1);
-		Console.WriteLine(sol2);
+		Console.WriteLine($"{solution1:F5}");
+		Console.WriteLine($"{solution2:F5}");
 	}
 	else if (discriminant == 0)
 	{
-		Console.WriteLine("Discriminant is one, so we have only one solution:");
-		Console.WriteLine(sol1);
+		Double solution = (-b + 0) / (2 * a);
+		Console.WriteLine("Discriminant is zero, so we have only one solution:");
+		Console.WriteLine($"{solution:F5}");
 	}
 	else
 	{
 		// no real roots
-		Console.WriteLine("Unable to solve, since the discriminant is lower than zero");
+		Double realPart = -b / (2 * a);
+		Double imaginaryPart = Sqrt(-discriminant) / (2 * a);
+
+		Console.WriteLine("Discriminant is negative, solutions are complex:");
+		Console.WriteLine($"{realPart} - {imaginaryPart:F5} * i");
+		Console.WriteLine($"{realPart} + {imaginaryPart:F5} * i");
 	}
 }
 
