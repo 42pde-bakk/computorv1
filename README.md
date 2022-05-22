@@ -10,3 +10,7 @@ And then build and test like this:
 ```shellscript
 dotnet build && ./test.sh
 ```
+
+TODO:
+
+Add Makefile <br>
