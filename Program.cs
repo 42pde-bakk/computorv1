@@ -174,7 +174,13 @@ static void SolveEasy(IReadOnlyDictionary<Int32, Double> d)
 
 	if (highestPower == 0)
 	{
-		Console.WriteLine("Solvable for every single X");
+		if (d[0] == 0)
+			Console.WriteLine("Solvable for every single X");
+		else
+		{
+			Console.WriteLine("Error. The statement does not seem to be true:");
+			Console.WriteLine($"\t {d[0]} != 0");
+		}
 	}
 	else
 	{
@@ -213,13 +219,14 @@ static Dictionary<Int32, Double> Parse(String arg)
 
 static Int32 GetHighestPolynomialDegree(IReadOnlyDictionary<Int32, Double> coeffs)
 {
-	Int32 highestDegree = 0;
-
-	if (coeffs.Count > 0)
+	foreach ((Int32 key, Double value) in coeffs.OrderByDescending(x => x.Key))
 	{
-		highestDegree = coeffs.Keys.Max();
+		if (value != 0)
+		{
+			return (key);
+		}
 	}
-	return (highestDegree);
+	return (0);
 }
 
 static void ShowHighestPolynomialDegree(IReadOnlyDictionary<Int32, Double> coeffs)
