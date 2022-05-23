@@ -8,9 +8,6 @@ docker-compose exec computorv1 bash
 
 And then build and test like this:
 ```shellscript
-dotnet build && ./test.sh
+make;
+make test
 ```
-
-TODO:
-
-Add Makefile <br>

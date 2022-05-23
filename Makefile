@@ -15,3 +15,4 @@ fclean: clean
 
 re: fclean all
 
+bonus: re
