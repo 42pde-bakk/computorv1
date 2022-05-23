@@ -3,7 +3,7 @@ WORKDIR /code
 ## https://docs.microsoft.com/en-us/dotnet/core/install/linux-debian
 
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y wget pgp curl man
+RUN apt-get install -y wget pgp curl man make
 
 ## A	dd the Microsoft package signing key to your list of trusted keys and add the package repository
 RUN wget -O - https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.asc.gpg \
