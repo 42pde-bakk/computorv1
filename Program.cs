@@ -136,7 +136,8 @@ static bool isInteger(Double d)
 static void ShowSteps(Double d, Double a, Double b, Double c)
 {
 	Console.WriteLine();
-	Console.OutputEncoding = Encoding.Unicode;
+	// set outputencoding to Unicode if on Windows
+	// Console.OutputEncoding = Encoding.Unicode;
 	String upper = $"-{b} ± \u221A({b}\u00B2 - 4*{a}*{c})";
 	Console.WriteLine($"    {upper}");
 	Console.WriteLine($"x = {new String('\u2014', upper.Length)}");
