@@ -21,6 +21,24 @@ static Double Sqrt(Double nb)
 	return (root);
 }
 
+static String	TryToRepresentAsFraction(Double nb)
+{
+	if (nb == 0)
+		return ("");
+	if (isInteger(nb))
+		return (nb.ToString());
+	foreach (Int32 value in Enumerable.Range(2, 100))
+	{
+		if (isInteger(nb * value))
+		{
+			Int32 numerator = (Int32)(nb * value);
+			Int32 denominator = value;
+			return ($"{numerator}/{denominator}");
+		}
+	}
+	return ($"{nb:F5}");
+}
+
 static Dictionary<Int32, Double> ParseSide(String arg)
 {
 	Regex r = new Regex(@"([+-]?[\d+]?.?[\d+]?)\*X\^([+-]?[\d+])", RegexOptions.IgnoreCase);
@@ -37,7 +55,6 @@ static Dictionary<Int32, Double> ParseSide(String arg)
 	{
 		Match match = r.Match(part);
 		Match no_coeff_match = no_coeff.Match(part);
-		Console.WriteLine($"part = {part}");
 		if (match.Success)
 		{
 			// parse it like a * x^p
@@ -173,14 +190,14 @@ static void Solve(IReadOnlyDictionary<Int32, Double> d)
 		Double solution1 = (-b + Sqrt(discriminant)) / (2 * a);
 		Double solution2 = (-b - Sqrt(discriminant)) / (2 * a);
 		Console.WriteLine("Discriminant is strictly positive, the two solutions are:");
-		Console.WriteLine($"{solution1:F5}");
-		Console.WriteLine($"{solution2:F5}");
+		Console.WriteLine(TryToRepresentAsFraction(solution1));
+		Console.WriteLine(TryToRepresentAsFraction(solution2));
 	}
 	else if (discriminant == 0)
 	{
 		Double solution = (-b + 0) / (2 * a);
 		Console.WriteLine("Discriminant is zero, so we have only one solution:");
-		Console.WriteLine($"{solution:F5}");
+		Console.WriteLine($"{TryToRepresentAsFraction(solution)}");
 	}
 	else
 	{
@@ -189,8 +206,8 @@ static void Solve(IReadOnlyDictionary<Int32, Double> d)
 		Double imaginaryPart = Sqrt(-discriminant) / (2 * a);
 
 		Console.WriteLine("Discriminant is negative, solutions are complex:");
-		Console.WriteLine($"{realPart} - {imaginaryPart:F5} * i");
-		Console.WriteLine($"{realPart} + {imaginaryPart:F5} * i");
+		Console.WriteLine($"{TryToRepresentAsFraction(realPart)} - {TryToRepresentAsFraction(imaginaryPart)} * i");
+		Console.WriteLine($"{TryToRepresentAsFraction(realPart)} + {TryToRepresentAsFraction(imaginaryPart)} * i");
 	}
 }
 
@@ -213,7 +230,7 @@ static void SolveEasy(IReadOnlyDictionary<Int32, Double> d)
 		Double rhs = d.ContainsKey(0) ? d[0] * -1 : 0;
 		Double answer = rhs / d[1];
 		Console.WriteLine($"The solution is:");
-		Console.WriteLine(answer);
+		Console.WriteLine(TryToRepresentAsFraction(answer));
 	}
 }
 

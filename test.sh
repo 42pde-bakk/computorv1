@@ -21,24 +21,24 @@ function run_testcase() {
 ## Evalsheet:
 
 # 0 degree equation after reduction
-#run_testcase "5 * X^0 = 5 * X^0"  # Any real number should be a solution
-#run_testcase "4 * X^0 = 8 * X^0"  # There is no solution
+# run_testcase "5 * X^0 = 5 * X^0"  # Any real number should be a solution
+# run_testcase "4 * X^0 = 8 * X^0"  # There is no solution
 
 # First degree equation after reduction
-#run_testcase "5 * X ^ 0 = 4 * X ^ 0 + 7 * X ^ 1"
+# run_testcase "5 * X ^ 0 = 4 * X ^ 0 + 7 * X ^ 1"
 
 # Second degree equation after reduction - Strictly positive discriminant
-#run_testcase "5 * X^0 + 13 * X^1 + 3 * X^2 = 1 * X^0 + 1 * X^1"
+# run_testcase "5 * X^0 + 13 * X^1 + 3 * X^2 = 1 * X^0 + 1 * X^1"
 
 # Second degree equation after reduction - Zero discriminant
-#run_testcase "6 * X^0 + 11 * X^1 + 5 * X^2 = 1 * X^0 + 1 * X^1"
+# run_testcase "6 * X^0 + 11 * X^1 + 5 * X^2 = 1 * X^0 + 1 * X^1"
 
 # Second degree equation after reduction - Strictly negative discriminant
-#run_testcase "5 * X^0 + 3 * X^1 + 3 * X^2 = 1 * X^0 + 0 * X^1"
+# run_testcase "5 * X^0 + 3 * X^1 + 3 * X^2 = 1 * X^0 + 0 * X^1"
 
 # Third or more degree equation after reduction
-#run_testcase "6 * X ^ 3 + 5 * X ^ 2 + 6 * X ^ 0 = 0"
-#run_testcase "6 * X ^ 3 + 5 * X ^ 2 + 6 * X ^ 0 = 6 * X ^ 3"
+# run_testcase "6 * X ^ 3 + 5 * X ^ 2 + 6 * X ^ 0 = 0"
+# run_testcase "6 * X ^ 3 + 5 * X ^ 2 + 6 * X ^ 0 = 6 * X ^ 3"
 
 ## Bonus:
 
