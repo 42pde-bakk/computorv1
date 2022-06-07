@@ -1,35 +1,17 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using System.Text;
-using System.Text.RegularExpressions;
-
-static Double Abs(Double nb)
-{
-	return (nb < 0) ? nb * -1 : nb;
-}
-
-static Double Sqrt(Double nb)
-{
-	if (nb <= 0)
-	{
-		return (double.NaN);
-	}
-	Double root = nb / 3;
-	Int32 i;
-	for (i = 0; i < 32; i++)
-		root = (root + nb / root) / 2;
-	return (root);
-}
+using Computorv1;
 
 static String	TryToRepresentAsFraction(Double nb)
 {
 	if (nb == 0)
 		return ("");
-	if (isInteger(nb))
+	if (MyMath.isInteger(nb))
 		return (nb.ToString());
 	foreach (Int32 value in Enumerable.Range(2, 100))
 	{
-		if (isInteger(nb * value))
+		if (MyMath.isInteger(nb * value))
 		{
 			Int32 numerator = (Int32)(nb * value);
 			Int32 denominator = value;
@@ -39,77 +21,9 @@ static String	TryToRepresentAsFraction(Double nb)
 	return ($"{nb:F5}");
 }
 
-static Dictionary<Int32, Double> ParseSide(String arg)
-{
-	Regex r = new Regex(@"([+-]?[\d+]?.?[\d+]?)\*X\^([+-]?[\d+])", RegexOptions.IgnoreCase);
-	Regex no_coeff = new Regex(@"([+-]?)X\^([+-]?[\d+])", RegexOptions.IgnoreCase);
-	Dictionary<Int32, Double> dict = new()
-	{
-		{0, 0},
-		{1, 0},
-		{2, 0}
-	};
-	String[] parts = Regex.Split(arg, @"(?=[+-])");
-
-	foreach (String part in parts)
-	{
-		Match match = r.Match(part);
-		Match no_coeff_match = no_coeff.Match(part);
-		if (match.Success)
-		{
-			// parse it like a * x^p
-			Double coeff = double.Parse(match.Groups[1].Value);
-			Int32 power = int.Parse(match.Groups[2].Value);
-			if (!dict.ContainsKey(power))
-				dict[power] = 0;
-			dict[power] += coeff;
-		}
-		else if (no_coeff_match.Success)
-		{
-			Double coefficient = no_coeff_match.Groups[1].Value == "-" ? -1 : 1;
-			Int32 power = int.Parse(no_coeff_match.Groups[2].Value);
-			if (!dict.ContainsKey(power))
-				dict[power] = 0;
-			dict[power] += coefficient;
-		}
-		else
-		{
-			if (part == "X" || (part.Length > 1 && part[1] == 'X' && (part[0] == '-' || part[0] == '+')))
-			{
-				// Just a lonely X
-				Int32 coeff = (part[0] == '-') ? -1 : 1;
-				dict[1] += coeff;
-			}
-			else
-			{
-				// maybe its just a regular int/float value
-				Int32 coeff = int.Parse(part);
-				dict[0] += coeff;
-			}
-		}
-	}
-	return dict;
-}
-
-static Int32 GCD(Int32 a, Int32 b)
-{
-	while (b > 0)
-	{
-		Int32 rem = a % b;
-		a = b;
-		b = rem;
-	}
-	return a;
-}
-
-static Int32 Max(Int32 a, Int32 b)
-{
-	return (a > b ? a : b);
-}
-
 static void ShowIrreducableFraction(Int32 up, Int32 down)
 {
-	Int32 gcd = GCD(up, down);
+	Int32 gcd = MyMath.GCD(up, down);
 	up /= gcd;
 	down /= gcd;
 	if (down is -1 or 1)
@@ -122,16 +36,12 @@ static void ShowIrreducableFraction(Int32 up, Int32 down)
 		String downstr = new String(down.ToString());
 	
 		Console.WriteLine($"    {upstr}");
-		Console.WriteLine($"x = {new String('\u2014', Max(upstr.Length, downstr.Length))}");
+		Console.WriteLine($"x = {new String('\u2014', MyMath.Max(upstr.Length, downstr.Length))}");
 		Console.WriteLine($"    {downstr}");
 		Console.WriteLine($"down = {down}");
 	}
 }
 
-static bool isInteger(Double d)
-{
-	return (d == (int) d);
-}
 
 static void ShowSteps(Double d, Double a, Double b, Double c)
 {
@@ -156,19 +66,19 @@ static void ShowSteps(Double d, Double a, Double b, Double c)
 	sp = (upper.Length - lower.Length) / 2;
 	Console.WriteLine($"    {new String(' ', sp)}{lower}");
 
-	Double dSqrt = Sqrt(d);
+	Double dSqrt = MyMath.Sqrt(d);
 
-	if (isInteger(2 * a) && (isInteger(-b + dSqrt) || isInteger(-b - dSqrt)))
+	if (MyMath.isInteger(2 * a) && (MyMath.isInteger(-b + dSqrt) || MyMath.isInteger(-b - dSqrt)))
 	{
 		Console.WriteLine($"Here be the irreducable fractions:");
-		if (isInteger(-b + dSqrt))
+		if (MyMath.isInteger(-b + dSqrt))
 		{
-			ShowIrreducableFraction((Int32)(-b + Sqrt(d)), (Int32)(2 * a));
+			ShowIrreducableFraction((Int32)(-b + MyMath.Sqrt(d)), (Int32)(2 * a));
 		}
 
-		if (isInteger(-b - dSqrt))
+		if (MyMath.isInteger(-b - dSqrt))
 		{
-			ShowIrreducableFraction((Int32)(-b - Sqrt(d)), (Int32)(2 * a));
+			ShowIrreducableFraction((Int32)(-b - MyMath.Sqrt(d)), (Int32)(2 * a));
 		}
 		
 	}
@@ -188,8 +98,8 @@ static void Solve(IReadOnlyDictionary<Int32, Double> d)
 
 	if (discriminant > 0)
 	{
-		Double solution1 = (-b + Sqrt(discriminant)) / (2 * a);
-		Double solution2 = (-b - Sqrt(discriminant)) / (2 * a);
+		Double solution1 = (-b + MyMath.Sqrt(discriminant)) / (2 * a);
+		Double solution2 = (-b - MyMath.Sqrt(discriminant)) / (2 * a);
 		Console.WriteLine("Discriminant is strictly positive, the two solutions are:");
 		Console.WriteLine(TryToRepresentAsFraction(solution1));
 		Console.WriteLine(TryToRepresentAsFraction(solution2));
@@ -204,7 +114,7 @@ static void Solve(IReadOnlyDictionary<Int32, Double> d)
 	{
 		// no real roots
 		Double realPart = -b / (2 * a);
-		Double imaginaryPart = Sqrt(-discriminant) / (2 * a);
+		Double imaginaryPart = MyMath.Sqrt(-discriminant) / (2 * a);
 
 		Console.WriteLine("Discriminant is negative, solutions are complex:");
 		Console.WriteLine($"{TryToRepresentAsFraction(realPart)} - {TryToRepresentAsFraction(imaginaryPart)} * i");
@@ -235,31 +145,6 @@ static void SolveEasy(IReadOnlyDictionary<Int32, Double> d)
 	}
 }
 
-static Dictionary<Int32, Double> Parse(String arg)
-{
-	String arg2 = Regex.Replace(arg, @"\s+", "");
-	String[] splitted = arg2.Split('=');
-	Dictionary<Int32, Double> lhs = ParseSide(splitted[0]);
-	Dictionary<Int32, Double> rhs = ParseSide(splitted[1]);
-
-	foreach ((Int32 key, Double value) in rhs)
-	{
-		if (!lhs.ContainsKey(key))
-		{
-			lhs[key] = 0;
-		}
-		lhs[key] -= value;
-	}
-
-	foreach ((Int32 key, var _) in lhs.Where(kvp => kvp.Value == 0).ToList())
-	{
-		if (key != 0)
-		{
-			lhs.Remove(key);
-		}
-	}
-	return (lhs);
-}
 
 static Int32 GetHighestPolynomialDegree(IReadOnlyDictionary<Int32, Double> coeffs)
 {
@@ -299,7 +184,7 @@ static void ShowReducedForm(IReadOnlyDictionary<Int32, Double> coeffs)
 				Console.Write($" {GetSignPrefix(coefficient)} ");
 			}
 			first = false;
-			Console.Write($"{Abs(coefficient)} * X^{power}");
+			Console.Write($"{MyMath.Abs(coefficient)} * X^{power}");
 		}
 	}
 
@@ -321,7 +206,7 @@ static void Computorv1(IReadOnlyList<String> args)
 
 	try
 	{
-		dict = Parse(args[0]);
+		dict = Parsing.Parse(args[0]);
 	}
 	catch
 	{
