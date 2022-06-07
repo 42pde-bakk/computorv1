@@ -80,7 +80,6 @@ static void ShowSteps(Double d, Double a, Double b, Double c)
 		{
 			ShowIrreducableFraction((Int32)(-b - MyMath.Sqrt(d)), (Int32)(2 * a));
 		}
-		
 	}
 }
 
@@ -108,7 +107,12 @@ static void Solve(IReadOnlyDictionary<Int32, Double> d)
 	{
 		Double solution = (-b + 0) / (2 * a);
 		Console.WriteLine("Discriminant is zero, so we have only one solution:");
-		Console.WriteLine($"{TryToRepresentAsFraction(solution)}");
+		String solution_str = TryToRepresentAsFraction(solution);
+		if (string.IsNullOrEmpty(solution_str))
+			Console.WriteLine(0);
+		else
+			Console.WriteLine(solution_str);
+		// Console.WriteLine($"{TryToRepresentAsFraction(solution)}");
 	}
 	else
 	{

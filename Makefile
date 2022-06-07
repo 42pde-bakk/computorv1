@@ -1,8 +1,4 @@
-﻿NAME := computorv1
-
-all: $(NAME)
-
-$(NAME):
+﻿all:
 	dotnet build
 
 clean:
@@ -12,7 +8,8 @@ test:
 	./test.sh
 
 fclean: clean
+	/bin/rm -rf bin obj $(NAME)
 
 re: fclean all
 
-bonus: re
+.PHONY: all $(NAME) clean test fclean re

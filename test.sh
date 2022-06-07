@@ -35,6 +35,7 @@ run_testcase "5 * X^0 + 13 * X^1 + 3 * X^2 = 1 * X^0 + 1 * X^1"
 
 # Second degree equation after reduction - Zero discriminant
 run_testcase "6 * X^0 + 11 * X^1 + 5 * X^2 = 1 * X^0 + 1 * X^1"
+run_testcase "3 * X ^ 2 + 24 * X ^ 1 + 48 * X ^ 0 = 0"
 
 # Second degree equation after reduction - Strictly negative discriminant
 run_testcase "5 * X^0 + 3 * X^1 + 3 * X^2 = 1 * X^0 + 0 * X^1"
