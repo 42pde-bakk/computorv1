@@ -47,4 +47,20 @@ run_testcase "6 * X ^ 3 + 5 * X ^ 2 + 6 * X ^ 0 = 6 * X ^ 3"
 ## Bonus:
 
 # Managing free form entry
+run_testcase "X^2 + 1 * X^1 + 4 = 0"  # Perfectly valid
+run_testcase "X^2 + 1 * X + 4 * X ^ 0 = 0"  # No ^1
+run_testcase "X^2 + X^1 + 4 * X ^ 0 = 0"  # No 1*
+run_testcase "X^2 + X^1 + 4 = 0"  # No * X^0
 run_testcase "4 - X^2 + X = 0"
+# run_testcase "X^2 + X = 3"
+# run_testcase "X^3 + X = X ^ 3"
+
+# Managing entry mistakes
+# run_testcase "X^2 + X = 0"  # 
+# run_testcase "X^2 + X"  # no =sign
+# run_testcase "X^1 + X = "
+# run_testcase "X^2 + X = -4"
+# run_testcase "X^2l + X = -4"
+# run_testcase "X^2 + XX = -4"
+# run_testcase "X^2 + XL = -4"
+# run_testcase "X^2 + X = -4D"

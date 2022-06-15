@@ -215,7 +215,7 @@ static void Computorv1(IReadOnlyList<String> args)
 	catch
 	{
 		Console.WriteLine("Could you do me a favour?");
-		System.Threading.Thread.Sleep(1000);
+		System.Threading.Thread.Sleep(200);
 		Console.WriteLine("And please give me valid input?!?!?!??!!");
 		return ;
 	}

@@ -8,8 +8,8 @@ test:
 	./test.sh
 
 fclean: clean
-	/bin/rm -rf bin obj $(NAME)
+	/bin/rm -rf bin obj
 
 re: fclean all
 
-.PHONY: all $(NAME) clean test fclean re
+.PHONY: all clean test fclean re
