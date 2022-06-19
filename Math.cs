@@ -1,13 +1,13 @@
 namespace Computorv1
 {
-	class MyMath
+	internal static class MyMath
 	{
-		static public Double Abs(Double nb)
+		public static Double Abs(Double nb)
 		{
 			return (nb < 0) ? nb * -1 : nb;
 		}
 
-		static public Double Sqrt(Double nb)
+		public static Double Sqrt(Double nb)
 		{
 			if (nb <= 0)
 			{
@@ -20,7 +20,7 @@ namespace Computorv1
 			return (root);
 		}
 
-		static public Int32 GCD(Int32 a, Int32 b)
+		public static Int32 Gcd(Int32 a, Int32 b)
 		{
 			while (b > 0)
 			{
@@ -31,14 +31,14 @@ namespace Computorv1
 			return a;
 		}
 
-		static public Int32 Max(Int32 a, Int32 b)
+		public static Int32 Max(Int32 a, Int32 b)
 		{
 			return (a > b ? a : b);
 		}
 
-		static public bool isInteger(Double d)
+		public static Boolean IsInteger(Double d)
 		{
-			return (d == (int) d);
+			return (Math.Abs(d - (Int32) d) < Double.Epsilon);
 		}
 	}
 }

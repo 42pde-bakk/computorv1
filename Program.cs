@@ -1,17 +1,16 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using System.Text;
 using Computorv1;
 
 static String	TryToRepresentAsFraction(Double nb)
 {
 	if (nb == 0)
 		return ("");
-	if (MyMath.isInteger(nb))
+	if (MyMath.IsInteger(nb))
 		return (nb.ToString());
 	foreach (Int32 value in Enumerable.Range(2, 100))
 	{
-		if (MyMath.isInteger(nb * value))
+		if (MyMath.IsInteger(nb * value))
 		{
 			Int32 numerator = (Int32)(nb * value);
 			Int32 denominator = value;
@@ -23,7 +22,7 @@ static String	TryToRepresentAsFraction(Double nb)
 
 static void ShowIrreducableFraction(Int32 up, Int32 down)
 {
-	Int32 gcd = MyMath.GCD(up, down);
+	Int32 gcd = MyMath.Gcd(up, down);
 	up /= gcd;
 	down /= gcd;
 	if (down is -1 or 1)
@@ -68,15 +67,15 @@ static void ShowSteps(Double d, Double a, Double b, Double c)
 
 	Double dSqrt = MyMath.Sqrt(d);
 
-	if (MyMath.isInteger(2 * a) && (MyMath.isInteger(-b + dSqrt) || MyMath.isInteger(-b - dSqrt)))
+	if (MyMath.IsInteger(2 * a) && (MyMath.IsInteger(-b + dSqrt) || MyMath.IsInteger(-b - dSqrt)))
 	{
 		Console.WriteLine($"Here be the irreducable fractions:");
-		if (MyMath.isInteger(-b + dSqrt))
+		if (MyMath.IsInteger(-b + dSqrt))
 		{
 			ShowIrreducableFraction((Int32)(-b + MyMath.Sqrt(d)), (Int32)(2 * a));
 		}
 
-		if (MyMath.isInteger(-b - dSqrt))
+		if (MyMath.IsInteger(-b - dSqrt))
 		{
 			ShowIrreducableFraction((Int32)(-b - MyMath.Sqrt(d)), (Int32)(2 * a));
 		}
@@ -107,11 +106,11 @@ static void Solve(IReadOnlyDictionary<Int32, Double> d)
 	{
 		Double solution = (-b + 0) / (2 * a);
 		Console.WriteLine("Discriminant is zero, so we have only one solution:");
-		String solution_str = TryToRepresentAsFraction(solution);
-		if (string.IsNullOrEmpty(solution_str))
+		String solutionStr = TryToRepresentAsFraction(solution);
+		if (string.IsNullOrEmpty(solutionStr))
 			Console.WriteLine(0);
 		else
-			Console.WriteLine(solution_str);
+			Console.WriteLine(solutionStr);
 		// Console.WriteLine($"{TryToRepresentAsFraction(solution)}");
 	}
 	else
@@ -215,7 +214,6 @@ static void Computorv1(IReadOnlyList<String> args)
 	catch
 	{
 		Console.WriteLine("Could you do me a favour?");
-		System.Threading.Thread.Sleep(200);
 		Console.WriteLine("And please give me valid input?!?!?!??!!");
 		return ;
 	}

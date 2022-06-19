@@ -2,12 +2,12 @@ using System.Text.RegularExpressions;
 
 namespace Computorv1
 {
-	class Parsing
+	internal static class Parsing
 	{
 		static Dictionary<Int32, Double> ParseSide(String arg)
 		{
 			Regex r = new Regex(@"([+-]?[\d+]?.?[\d+]?)\*X\^([+-]?[\d+])", RegexOptions.IgnoreCase);
-			Regex no_coeff = new Regex(@"([+-]?)X\^([+-]?[\d+])", RegexOptions.IgnoreCase);
+			Regex noCoeff = new Regex(@"([+-]?)X\^([+-]?[\d+])", RegexOptions.IgnoreCase);
 			Dictionary<Int32, Double> dict = new()
 			{
 				{0, 0},
@@ -19,7 +19,7 @@ namespace Computorv1
 			foreach (String part in parts)
 			{
 				Match match = r.Match(part);
-				Match no_coeff_match = no_coeff.Match(part);
+				Match noCoeffMatch = noCoeff.Match(part);
 				if (match.Success)
 				{
 					// parse it like a * x^p
@@ -29,10 +29,10 @@ namespace Computorv1
 						dict[power] = 0;
 					dict[power] += coeff;
 				}
-				else if (no_coeff_match.Success)
+				else if (noCoeffMatch.Success)
 				{
-					Double coefficient = no_coeff_match.Groups[1].Value == "-" ? -1 : 1;
-					Int32 power = int.Parse(no_coeff_match.Groups[2].Value);
+					Double coefficient = noCoeffMatch.Groups[1].Value == "-" ? -1 : 1;
+					Int32 power = int.Parse(noCoeffMatch.Groups[2].Value);
 					if (!dict.ContainsKey(power))
 						dict[power] = 0;
 					dict[power] += coefficient;
@@ -56,7 +56,7 @@ namespace Computorv1
 			return dict;
 		}
 
-		static public Dictionary<Int32, Double> Parse(String arg)
+		public static Dictionary<Int32, Double> Parse(String arg)
 		{
 			String arg2 = Regex.Replace(arg, @"\s+", "");
 			String[] splitted = arg2.Split('=');
