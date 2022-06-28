@@ -6,6 +6,7 @@ namespace Computorv1
 	{
 		static Dictionary<Int32, Double> ParseSide(String arg)
 		{
+			Regex allRegex = new Regex(@"(?<coefficient>[+-]?[\d+]?.?[\d+]?)(?<times>\*)(?<x>X)(?<power>\^[+-]?[\d+])", RegexOptions.IgnoreCase);
 			Regex r = new Regex(@"([+-]?[\d+]?.?[\d+]?)\*X\^([+-]?[\d+])", RegexOptions.IgnoreCase);
 			Regex noCoeff = new Regex(@"([+-]?)X\^([+-]?[\d+])", RegexOptions.IgnoreCase);
 			Dictionary<Int32, Double> dict = new()
@@ -18,40 +19,85 @@ namespace Computorv1
 
 			foreach (String part in parts)
 			{
-				Match match = r.Match(part);
-				Match noCoeffMatch = noCoeff.Match(part);
-				if (match.Success)
+				Match allMatch = allRegex.Match(part);
+				Console.WriteLine($"allMatch groups: {allMatch.Groups}");
+
+				if (allMatch.Success)
 				{
-					// parse it like a * x^p
-					Double coeff = double.Parse(match.Groups[1].Value);
-					Int32 power = int.Parse(match.Groups[2].Value);
-					if (!dict.ContainsKey(power))
-						dict[power] = 0;
-					dict[power] += coeff;
-				}
-				else if (noCoeffMatch.Success)
-				{
-					Double coefficient = noCoeffMatch.Groups[1].Value == "-" ? -1 : 1;
-					Int32 power = int.Parse(noCoeffMatch.Groups[2].Value);
+					String coefficientString;
+					String powerString;
+					Double coefficient;
+					Int32 power;
+
+					// foreach (var group in allMatch.Groups)
+					// {
+					// 	Console.WriteLine($"group: {group}");
+					// }
+
+					coefficientString = allMatch.Groups["coefficient"].Value;
+					powerString = allMatch.Groups["power"].Value;
+					// Console.WriteLine($"powerstring = {powerString}, coeffString = {coefficientString}");
+					if (powerString[0] == '^')
+					{
+						powerString = powerString.Substring(1, powerString.Length - 1);
+					}
+					else
+					{
+						throw new NotImplementedException("no ^ symbol");
+					}
+					power = int.Parse(powerString);
+
+					if (!string.IsNullOrEmpty(coefficientString))
+					{
+						if (allMatch.Groups["times"].Value != "*")
+							throw new NotImplementedException("no * symbol");
+						coefficient = double.Parse(coefficientString);
+					}
+					else
+					{
+						coefficient = 1;
+					}
+
+					// Console.WriteLine($"group: {allMatch.Groups[0].Value}");
+					// Console.WriteLine($"power = {power}, coefficient = {coefficient}");
 					if (!dict.ContainsKey(power))
 						dict[power] = 0;
 					dict[power] += coefficient;
 				}
-				else
-				{
-					if (part == "X" || (part.Length > 1 && part[1] == 'X' && (part[0] == '-' || part[0] == '+')))
-					{
-						// Just a lonely X
-						Int32 coeff = (part[0] == '-') ? -1 : 1;
-						dict[1] += coeff;
-					}
-					else
-					{
-						// maybe its just a regular int/float value
-						Int32 coeff = int.Parse(part);
-						dict[0] += coeff;
-					}
-				}
+				// Match match = r.Match(part);
+				// Match noCoeffMatch = noCoeff.Match(part);
+				// if (match.Success)
+				// {
+				// 	// parse it like a * x^p
+				// 	Double coeff = double.Parse(match.Groups[1].Value);
+				// 	Int32 power = int.Parse(match.Groups[2].Value);
+				// 	if (!dict.ContainsKey(power))
+				// 		dict[power] = 0;
+				// 	dict[power] += coeff;
+				// }
+				// else if (noCoeffMatch.Success)
+				// {
+				// 	Double coefficient = noCoeffMatch.Groups[1].Value == "-" ? -1 : 1;
+				// 	Int32 power = int.Parse(noCoeffMatch.Groups[2].Value);
+				// 	if (!dict.ContainsKey(power))
+				// 		dict[power] = 0;
+				// 	dict[power] += coefficient;
+				// }
+				// else
+				// {
+				// 	if (part == "X" || (part.Length > 1 && part[1] == 'X' && (part[0] == '-' || part[0] == '+')))
+				// 	{
+				// 		// Just a lonely X
+				// 		Int32 coeff = (part[0] == '-') ? -1 : 1;
+				// 		dict[1] += coeff;
+				// 	}
+				// 	else
+				// 	{
+				// 		// maybe its just a regular int/float value
+				// 		Int32 coeff = int.Parse(part);
+				// 		dict[0] += coeff;
+				// 	}
+				// }
 			}
 			return dict;
 		}
