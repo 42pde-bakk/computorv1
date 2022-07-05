@@ -7,8 +7,7 @@ namespace Computorv1
 		static Dictionary<Int32, Double> ParseSide(String arg)
 		{
 			Regex allRegex = new Regex(@"^(?<coefficient>[+-]?[\d+]?.?[\d+]?\*?)?(?<x>X)(?<power>\^[+-]?[\d+])?$", RegexOptions.IgnoreCase);
-			Regex coeffOnlyRegex = new Regex(@"^([+-]?[\d+].?[\d+]?)$", RegexOptions.IgnoreCase);
-			// Regex noCoeff = new Regex(@"([+-]?)X\^([+-]?[\d+])", RegexOptions.IgnoreCase);
+			Regex coeffOnlyRegex = new Regex(@"^([+-]?[\d+]?.?[\d+]?)$", RegexOptions.IgnoreCase);
 			Dictionary<Int32, Double> dict = new()
 			{
 				{0, 0},
@@ -19,11 +18,15 @@ namespace Computorv1
 
 			foreach (String part in parts)
 			{
+				if (parts.Length > 1 && string.IsNullOrEmpty(part))
+				{
+					continue;
+				}
 				// Console.WriteLine($"trying to match {part}");
 				Match allMatch = allRegex.Match(part);
 				Match coeffOnlyMatch = coeffOnlyRegex.Match(part);
 
-				// Console.WriteLine($"part = {part}, success? : {allMatch.Success}");
+				Console.WriteLine($"part = {part}, success? : {allMatch.Success} | {coeffOnlyMatch.Success}");
 
 				if (allMatch.Success)
 				{

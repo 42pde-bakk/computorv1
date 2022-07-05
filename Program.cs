@@ -216,7 +216,7 @@ static void Computorv1(IReadOnlyList<String> args)
 	{
 		Console.WriteLine("Could you do me a favour?");
 		Console.WriteLine("And please give me valid input?!?!?!??!!");
-		Console.WriteLine(e.ToString());
+		// Console.WriteLine(e.ToString());
 		Environment.Exit(1);
 	}
 	Int32 highestDegree = GetHighestPolynomialDegree(dict);
