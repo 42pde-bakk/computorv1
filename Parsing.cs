@@ -6,8 +6,8 @@ namespace Computorv1
 	{
 		static Dictionary<Int32, Double> ParseSide(String arg)
 		{
-			Regex allRegex = new Regex(@"(?<coefficient>[+-]?[\d+]?.?[\d+]?\*?)?(?<x>X)(?<power>\^[+-]?[\d+])", RegexOptions.IgnoreCase);
-			Regex r = new Regex(@"([+-]?[\d+]?.?[\d+]?)", RegexOptions.IgnoreCase);
+			Regex allRegex = new Regex(@"^(?<coefficient>[+-]?[\d+]?.?[\d+]?\*?)?(?<x>X)(?<power>\^[+-]?[\d+])?$", RegexOptions.IgnoreCase);
+			Regex coeffOnlyRegex = new Regex(@"^([+-]?[\d+].?[\d+]?)$", RegexOptions.IgnoreCase);
 			// Regex noCoeff = new Regex(@"([+-]?)X\^([+-]?[\d+])", RegexOptions.IgnoreCase);
 			Dictionary<Int32, Double> dict = new()
 			{
@@ -19,11 +19,11 @@ namespace Computorv1
 
 			foreach (String part in parts)
 			{
-				Console.WriteLine($"trying to match {part}");
+				// Console.WriteLine($"trying to match {part}");
 				Match allMatch = allRegex.Match(part);
-				Match coeffOnlyMatch = r.Match(part);
+				Match coeffOnlyMatch = coeffOnlyRegex.Match(part);
 
-				Console.WriteLine($"part = {part}, success? : {allMatch.Success}");
+				// Console.WriteLine($"part = {part}, success? : {allMatch.Success}");
 
 				if (allMatch.Success)
 				{
@@ -39,9 +39,9 @@ namespace Computorv1
 
 					coefficientString = allMatch.Groups["coefficient"].Value;
 					powerString = allMatch.Groups["power"].Value;
-					Console.WriteLine($"powerstring = {powerString}, coeffString = {coefficientString}");
+					// Console.WriteLine($"powerstring = {powerString}, coeffString = {coefficientString}");
 
-					if (powerString[0] == '^')
+					if (!string.IsNullOrEmpty(powerString) && powerString[0] == '^')
 					{
 						powerString = powerString.Substring(1, powerString.Length - 1);
 						power = int.Parse(powerString);
@@ -55,12 +55,17 @@ namespace Computorv1
 
 					if (!string.IsNullOrEmpty(coefficientString))
 					{
-						if (coefficientString[coefficientString.Length - 1] == '*')
+						// Console.WriteLine($"coeffString = {coefficientString}");
+						if (coefficientString is "+" or "-")
+						{
+							coefficientString = String.Concat(coefficientString, "1");
+						}
+						if (coefficientString[^1] == '*')
 						{
 							coefficientString = coefficientString.Substring(0, coefficientString.Length - 1);
-							Console.WriteLine($"hoi");
+							// Console.WriteLine($"NEW coeffString = {coefficientString}");
 						}
-						Console.WriteLine($"coeffString = {coefficientString}");
+						// Console.WriteLine($"coeffString = {coefficientString}");
 						// if (allMatch.Groups["times"].Value != "*")
 						// 	throw new NotImplementedException("no * symbol");
 						coefficient = double.Parse(coefficientString);
@@ -71,19 +76,23 @@ namespace Computorv1
 					}
 
 					// Console.WriteLine($"group: {allMatch.Groups[0].Value}");
-					Console.WriteLine($"power = {power}, coefficient = {coefficient}");
+					// Console.WriteLine($"power = {power}, coefficient = {coefficient}");
 					if (!dict.ContainsKey(power))
 						dict[power] = 0;
 					dict[power] += coefficient;
 				}
 				else if (coeffOnlyMatch.Success)
 				{
-					Console.WriteLine($"part = {part}");
+					// Console.WriteLine($"coeffOnlyMatch = Success, part = {part}");
 					Int32 coefficient = int.Parse(part);
 					Int32 power = 0;
 
 					dict[power] += coefficient;
-					continue ; 
+				}
+				else
+				{
+					// Console.WriteLine("shitters clogged");
+					throw new ArgumentException("cant match part");
 				}
 			}
 			return dict;
@@ -95,6 +104,10 @@ namespace Computorv1
 			String[] splitted = arg2.Split('=');
 			Dictionary<Int32, Double> lhs = ParseSide(splitted[0]);
 			Dictionary<Int32, Double> rhs = ParseSide(splitted[1]);
+			if (string.IsNullOrWhiteSpace(splitted[0]) || string.IsNullOrWhiteSpace(splitted[1]))
+			{
+				throw new ArgumentException("Empty string on either side of =sign");
+			}
 
 			foreach ((Int32 key, Double value) in rhs)
 			{

@@ -137,6 +137,7 @@ static void SolveEasy(IReadOnlyDictionary<Int32, Double> d)
 		{
 			Console.WriteLine("Error. The statement does not seem to be true:");
 			Console.WriteLine($"\t {d[0]} != 0");
+			Environment.Exit(1);
 		}
 	}
 	else
@@ -200,7 +201,7 @@ static void ShowReducedForm(IReadOnlyDictionary<Int32, Double> coeffs)
 
 static void Computorv1(IReadOnlyList<String> args)
 {
-	Dictionary<Int32, Double> dict;
+	Dictionary<Int32, Double> dict = new Dictionary<int, double>();
 	if (args.Count != 1)
 	{
 		Console.WriteLine("Error. Please provide your equation within quotes");
@@ -211,11 +212,12 @@ static void Computorv1(IReadOnlyList<String> args)
 	{
 		dict = Parsing.Parse(args[0]);
 	}
-	catch
+	catch (Exception e)
 	{
 		Console.WriteLine("Could you do me a favour?");
 		Console.WriteLine("And please give me valid input?!?!?!??!!");
-		return ;
+		Console.WriteLine(e.ToString());
+		Environment.Exit(1);
 	}
 	Int32 highestDegree = GetHighestPolynomialDegree(dict);
 	ShowReducedForm(dict);
@@ -231,6 +233,7 @@ static void Computorv1(IReadOnlyList<String> args)
 	else
 	{
 		Console.WriteLine("Error. Please provide me with a valid polynomial.");
+		Environment.Exit(1);
 	}
 }
 
