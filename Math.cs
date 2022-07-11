@@ -1,44 +1,47 @@
+// ReSharper disable All
 namespace Computorv1
 {
 	internal static class MyMath
 	{
-		public static Double Abs(Double nb)
+		public static double Abs(double nb)
 		{
 			return (nb < 0) ? nb * -1 : nb;
 		}
 
-		public static Double Sqrt(Double nb)
+		public static double Sqrt(double nb)
 		{
 			if (nb <= 0)
 			{
 				return (double.NaN);
 			}
-			Double root = nb / 3;
-			Int32 i;
+			double root = nb / 3;
+			int i;
 			for (i = 0; i < 32; i++)
+			{
 				root = (root + nb / root) / 2;
+			}
 			return (root);
 		}
 
-		public static Int32 Gcd(Int32 a, Int32 b)
+		public static int Gcd(int a, int b)
 		{
 			while (b > 0)
 			{
-				Int32 rem = a % b;
+				int rem = a % b;
 				a = b;
 				b = rem;
 			}
 			return a;
 		}
 
-		public static Int32 Max(Int32 a, Int32 b)
+		public static int Max(int a, int b)
 		{
 			return (a > b ? a : b);
 		}
 
-		public static Boolean IsInteger(Double d)
+		public static bool IsInteger(double d)
 		{
-			return (Math.Abs(d - (Int32) d) < Double.Epsilon);
+			return (Math.Abs(d - (int) d) < double.Epsilon);
 		}
 	}
 }
